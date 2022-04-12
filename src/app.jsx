@@ -107,37 +107,42 @@ class App extends Component {
     //     console.log(`handleSort()`);
     // }
 
+    // this is very very very very bad, dry it
     async handleDonenessSort() {
         console.log(`handleDonenessSort()`);
-        if (!this.state.isDonenessSorted.sorted) {
+        let tempTodosArr = [...this.state.todos];
+        if (!this.state.isDonenessSorted.sorted) { // if not sorted, sort ascending
             console.log(`First 'if' triggered, sorting unsorted array`);
             
-            let tempTodosArr = [...this.state.todos];
-            
-            tempTodosArr.sort((a, b) => Number(a.completed) - Number(b.completed));
+            tempTodosArr.sort((a, b) => Number(a.completed) - Number(b.completed)).reverse();
 
             console.log(`After sort, compare temp array to state:`);
             console.log(tempTodosArr);
             console.log(this.state.todos);
-            this.setState({todos: tempTodosArr});
-            this.setState({todosMutated: tempTodosArr});
+            
             this.setState({isDonenessSorted: {sorted: true, ascending: true}});
-        } else {
+        } else { // if sorted, sort the opposite of what it is
+            if (!this.state.isDonenessSorted.ascending) {
+                tempTodosArr.sort((a, b) => Number(a.completed) - Number(b.completed)).reverse();
+            } else { // is sorted, is ascending, sort descending
+                // sort it again in case other sorting has been applied
+                // tempTodosArr.sort((a, b) => Number(a.completed) - Number(b.completed));
+                tempTodosArr.reverse();
+            }
             console.log(`'else' triggered, reversing sorted array`);
-            let tempTodosArr = [...this.state.todos];
-            tempTodosArr.reverse();
-            this.setState({todos: tempTodosArr});
-            this.setState({todosMutated: tempTodosArr});
             this.setState({isDonenessSorted: {sorted: true, ascending: !this.state.isDonenessSorted.ascending}});
         }
+        this.setState({todos: tempTodosArr});
+        this.setState({todosMutated: tempTodosArr});
+        this.setState({isTaskSorted: {sorted: false, ascending: false}});
     }
 
+    // this is very very very very bad, dry it
     async handleTaskSort() {
         console.log(`handleTaskSort()`);
+        let tempTodosArr = [...this.state.todos];
         if (!this.state.isTaskSorted.sorted) {
             console.log(`First 'if' triggered, sorting unsorted array`);
-            
-            let tempTodosArr = [...this.state.todos];
             
             tempTodosArr.sort((a, b) => {
                 let insensitiveA = a.title.toLowerCase(),
@@ -155,18 +160,41 @@ class App extends Component {
             console.log(`After sort, compare temp array to state:`);
             console.log(tempTodosArr);
             console.log(this.state);
-            this.setState({todos: tempTodosArr});
-            this.setState({todosMutated: tempTodosArr});
             this.setState({isTaskSorted: {sorted: true, ascending: true}});
         } else {
             console.log(`'else' triggered, reversing sorted array`);
-            let tempTodosArr = [...this.state.todos];
-            tempTodosArr.reverse();
-            this.setState({todos: tempTodosArr});
-            this.setState({todosMutated: tempTodosArr});
+            if (!this.state.isTaskSorted.ascending) {            
+                tempTodosArr.sort((a, b) => {
+                    let insensitiveA = a.title.toLowerCase(),
+                        insensitiveB = b.title.toLowerCase();
+        
+                    if (insensitiveA < insensitiveB) {
+                        return -1;
+                    } else if (insensitiveA > insensitiveB) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                });
+            } else {
+                tempTodosArr.sort((a, b) => {
+                    let insensitiveA = a.title.toLowerCase(),
+                        insensitiveB = b.title.toLowerCase();
+        
+                    if (insensitiveA < insensitiveB) {
+                        return -1;
+                    } else if (insensitiveA > insensitiveB) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }).reverse();
+            }
             this.setState({isTaskSorted: {sorted: true, ascending: !this.state.isTaskSorted.ascending}});
         }
-        
+        this.setState({todos: tempTodosArr});
+        this.setState({todosMutated: tempTodosArr});
+        this.setState({isDonenessSorted: {sorted: false, ascending: false}});
     }
 
     async updateTask(task) {
@@ -214,8 +242,8 @@ class App extends Component {
             this.setState({todos: newTodos});
             this.setState({todosCached: newTodosCached});
             this.setState({todosMutated: newTodosMutated});
-            this.setState({isTaskSorted: {sorted: false, ascending: this.state.isTaskSorted.ascending}});
-            this.setState({isDonenessSorted: {sorted: false, ascending: this.state.isDonenessSorted.ascending}});
+            this.setState({isTaskSorted: {sorted: false, ascending: !this.state.isTaskSorted.ascending}});
+            this.setState({isDonenessSorted: {sorted: false, ascending: !this.state.isDonenessSorted.ascending}});
             this.setState({isTextSearched: {searched: false, text: ''}});
 
             this.setNextPagination();
@@ -304,7 +332,6 @@ class App extends Component {
                                     loader={<div className="loading-more"><FontAwesomeIcon icon={faYinYang} spin /></div>}
                                     endMessage={<div className="finished-scrolling"><h3>That's all, for now...</h3></div>}
                                 >
-                                    
                                     {listItems}
                                 </InfiniteScroll>
                             </ul>
