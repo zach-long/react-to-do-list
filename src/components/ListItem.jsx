@@ -1,7 +1,10 @@
 import React from 'react';
 import Highlighter from 'react-highlight-words';
+import { useMediaQuery } from 'react-responsive'
 
 function ListItem(props) {
+    const isMobile = useMediaQuery({ query: '(max-width: 1024px)' });
+    const titleContainerClassList = isMobile ? 'task-title-container mobile-list-bg' : 'task-title-container';
 
     function handleChange(e) {
         e.stopPropagation();
@@ -24,7 +27,7 @@ function ListItem(props) {
             <div className="task-checkbox-container">
                 <input type="checkbox" checked={props.i.completed} onClick={handleChange} />
             </div>
-            <div className="task-title-container">
+            <div className={titleContainerClassList}>
                 <Highlighter
                     highlightClassName="matched-text"
                     searchWords={[props.searchText]}

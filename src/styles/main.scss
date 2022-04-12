@@ -267,6 +267,10 @@ $loading: (loading, loading-more);
     background-color: $overlay-color;
 }
 
+.mobile-list-bg {
+    background: $mobile-list-background;
+}
+
 .matched-text {
     background-color: $app-background;
     color: $blue;

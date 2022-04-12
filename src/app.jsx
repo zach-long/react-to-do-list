@@ -304,6 +304,7 @@ class App extends Component {
                                     loader={<div className="loading-more"><FontAwesomeIcon icon={faYinYang} spin /></div>}
                                     endMessage={<div className="finished-scrolling"><h3>That's all, for now...</h3></div>}
                                 >
+                                    
                                     {listItems}
                                 </InfiniteScroll>
                             </ul>
