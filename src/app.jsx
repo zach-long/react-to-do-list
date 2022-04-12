@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Modal from 'react-modal';
-Modal.setAppElement('#app');
 import InfiniteScroll from 'react-infinite-scroll-component';
+import MediaQuery from 'react-responsive'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faYinYang, faArrowRotateRight } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
@@ -11,6 +11,8 @@ import './styles/main.scss';
 
 // components
 import ListItem from './components/ListItem';
+
+Modal.setAppElement('#app');
 
 class App extends Component {
     constructor(props) {
@@ -21,7 +23,7 @@ class App extends Component {
             infiniteWalkStart: 50, // incremented with function getMoreData()
             moreDataExists: true,
             todos: [], // this is the only dataset that should be passed to components to be viewed
-            todosCached: [], // this dataset should never be changed, only read
+            todosCached: [], // this dataset should only be changed (appended to) by additional GET requests
             todosMutated: [], // a copy of state.todos used to compare a string search against already sorted data
             isTaskSorted: {sorted: false, ascending: false},
             isDonenessSorted: {sorted: false, ascending: false},
@@ -254,6 +256,8 @@ class App extends Component {
                 <FontAwesomeIcon icon={faArrowRotateRight} />
             </button>;
 
+        const mobileResetButton = <button id="reset" onClick={this.resetSort}><FontAwesomeIcon icon={faArrowRotateRight} /></button>;
+
         return (
             <div className="flex-column align-items-center container">
                 <a id="github-link" style={{display: "table-cell"}} href="https://github.com/zach-long/react-to-do-list" target="_blank"><FontAwesomeIcon icon={faGithub} /></a>
@@ -261,7 +265,14 @@ class App extends Component {
                 <h4 class="subtitle">While we wait for life, life passes.</h4>
                 <div id="sort-control-box" className="flex-row justify-content-space-between">
                     <input id="text-search" placeholder="What are you searching for?" value={this.state.isTextSearched.text} onChange={this.handleTextSearch} />
-                    {resetButton}
+                    {/* render reset button with hover & rotate animations */}
+                    <MediaQuery minWidth={1024}>
+                        {resetButton}
+                    </MediaQuery>
+                    {/* render reset button that will respond properly to touch */}
+                    <MediaQuery maxWidth={1023}>
+                        {mobileResetButton}
+                    </MediaQuery>
                 </div>
                 {this.state.todosCached.length > 0 ?
                     <div id="todo-list-container">
