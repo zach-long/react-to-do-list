@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 Modal.setAppElement('#app');
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown, faYinYang } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faYinYang, faArrowRotateRight } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 import './styles/main.scss';
@@ -27,7 +27,8 @@ class App extends Component {
             isDonenessSorted: {sorted: false, ascending: false},
             isTextSearched: {searched: false, text: ''},
             modalIsOpen: false,
-            modalTask: {} // an object from inside the state.todos array
+            modalTask: {}, // an object from inside the state.todos array
+            resetIsHovered: false
         }
 
         this.updateTask = this.updateTask.bind(this);
@@ -38,10 +39,24 @@ class App extends Component {
         this.handleTextSearch = this.handleTextSearch.bind(this);
 
         this.toggleModal = this.toggleModal.bind(this);
+        
+        this.toggleResetHover = this.toggleResetHover.bind(this);
+    }
+    
+    toggleResetHover() {
+        this.setState({resetIsHovered: !this.state.resetIsHovered});
     }
 
     toggleModal(item) {
         console.log(`toggle modal`);
+        if (!this.state.modalIsOpen) {
+            document.body.classList.add('fixed');
+            document.documentElement.classList.add('fixed-body');
+
+        } else {
+            document.body.classList.remove('fixed');
+            document.documentElement.classList.remove('fixed-body');
+        }
         this.setState({modalTask: item})
         this.setState({modalIsOpen: !this.state.modalIsOpen});
     }
@@ -200,8 +215,7 @@ class App extends Component {
             this.setState({isTaskSorted: {sorted: false, ascending: this.state.isTaskSorted.ascending}});
             this.setState({isDonenessSorted: {sorted: false, ascending: this.state.isDonenessSorted.ascending}});
             this.setState({isTextSearched: {searched: false, text: ''}});
-    
-            // this.setState({todosMutated: json});
+
             this.setNextPagination();
         } else {
             this.setState({moreDataExists: false});
@@ -229,8 +243,16 @@ class App extends Component {
         console.log(`******************************************************`);
 
         const listItems = this.state.todos.map((i) => {
-            return <ListItem key={i.id} i={i} updateTask={this.updateTask} toggleModal={this.toggleModal} />
+            return <ListItem key={i.id} i={i} searchText={this.state.isTextSearched.text} updateTask={this.updateTask} toggleModal={this.toggleModal} />
         });
+
+        const resetButton = this.state.resetIsHovered ?
+            <button id="reset" onMouseEnter={this.toggleResetHover} onMouseLeave={this.toggleResetHover} onClick={this.resetSort}>
+                <FontAwesomeIcon icon={faArrowRotateRight} className="rotating" />
+            </button> :
+            <button id="reset" onMouseEnter={this.toggleResetHover} onMouseLeave={this.toggleResetHover} onClick={this.resetSort}>
+                <FontAwesomeIcon icon={faArrowRotateRight} />
+            </button>;
 
         return (
             <div className="flex-column align-items-center container">
@@ -238,36 +260,44 @@ class App extends Component {
                 <h1 class="title">Things to be done</h1>
                 <h4 class="subtitle">While we wait for life, life passes.</h4>
                 <div id="sort-control-box" className="flex-row justify-content-space-between">
-                    <input id="text-search" placeholder="Type here to search by text..." value={this.state.isTextSearched.text} onChange={this.handleTextSearch} />
-                    <button id="reset" onClick={this.resetSort}>Reset</button>
+                    <input id="text-search" placeholder="What are you searching for?" value={this.state.isTextSearched.text} onChange={this.handleTextSearch} />
+                    {resetButton}
                 </div>
                 {this.state.todosCached.length > 0 ?
-                    <div id="todo-list">
-                        <ul>
-                            <li>
-                                <div className="task-checkbox-container sort-control">
-                                    {this.state.isDonenessSorted.ascending ?
-                                        <FontAwesomeIcon icon={faAngleDown} flip="vertical" onClick={this.handleDonenessSort} /> :
-                                        <FontAwesomeIcon icon={faAngleDown} onClick={this.handleDonenessSort} />
-                                    }                                    
-                                </div>
-                                <div className="task-title-container sort-control">
-                                    {this.state.isTaskSorted.ascending ?
-                                        <FontAwesomeIcon icon={faAngleDown} flip="vertical" onClick={this.handleTaskSort} /> :
-                                        <FontAwesomeIcon icon={faAngleDown} onClick={this.handleTaskSort} />
-                                    }
-                                </div>
-                            </li>
-                            <InfiniteScroll
-                                dataLength={this.state.todos.length}
-                                next={this.getMoreData}
-                                hasMore={this.state.moreDataExists}
-                                style={{ display: 'flex', flexDirection: 'column' }}
-                                loader={ <h1>LOADING</h1> }
-                            >
-                                {listItems}
-                            </InfiniteScroll>
-                        </ul>
+                    <div id="todo-list-container">
+                        {this.state.todos.length < 1 ?
+                            <div className="no-results">
+                                <h3>You did not find what you were searching for.</h3>
+                            </div>
+                        :
+                            <ul>
+                                <li>
+                                    <div className="task-checkbox-container sort-control" onClick={this.handleDonenessSort}>
+                                        {this.state.isDonenessSorted.ascending ?
+                                            <FontAwesomeIcon icon={faAngleDown} flip="vertical" /> :
+                                            <FontAwesomeIcon icon={faAngleDown} />
+                                        }                                    
+                                    </div>
+                                    <div className="task-title-container sort-control" onClick={this.handleTaskSort}>
+                                        {this.state.isTaskSorted.ascending ?
+                                            <FontAwesomeIcon icon={faAngleDown} flip="vertical" /> :
+                                            <FontAwesomeIcon icon={faAngleDown} />
+                                        }
+                                    </div>
+                                </li>
+                                <InfiniteScroll
+                                    dataLength={this.state.todos.length}
+                                    next={this.getMoreData}
+                                    hasMore={this.state.moreDataExists}
+                                    style={{display: 'flex', flexDirection: 'column'}}
+                                    loader={<div className="loading-more"><FontAwesomeIcon icon={faYinYang} spin /></div>}
+                                    endMessage={<div className="finished-scrolling"><h3>That's all, for now...</h3></div>}
+                                >
+                                    {listItems}
+                                </InfiniteScroll>
+                            </ul>
+                        }
+                        
                     </div>
                 :
                     <div className="loading">
@@ -278,10 +308,13 @@ class App extends Component {
                 <Modal
                     isOpen={this.state.modalIsOpen}
                     onRequestClose={this.toggleModal}
+                    className="Modal"
+                    overlayClassName="Modal-overlay"
+                    closeTimeoutMS={100}
                 >
-                    <p>Task ID: {this.state.modalTask.id}</p>
-                    <p>Title: {this.state.modalTask.title}</p>
-                    <p>Completed: {this.state.modalTask.completed ? `yes` : `no`}</p>
+                    <p><b>Task ID:</b> {this.state.modalTask.id}</p>
+                    <p><b>Title:</b> {this.state.modalTask.title}</p>
+                    <p><b>Completed:</b> {this.state.modalTask.completed ? `yes` : `no`}</p>
                 </Modal>
             </div>
         );

@@ -7,27 +7,57 @@
     align-items: $align-items;
 }
 
+@mixin transition($transition...) {
+    -webkit-transition: $transition;
+    -moz-transition: $transition;
+    -ms-transition: $transition;
+    -o-transition: $transition;
+    transition: $transition;
+}
+
+@mixin animation($animation...) {
+    -webkit-animation: $animation;
+    -moz-animation: $animation;
+    -ms-animation: $animation;
+    -o-animation: $animation;
+    animation: $animation;
+}
+
+@mixin transform($transform...) {
+    -webkit-transform: $transform;
+    -moz-transform: $transform;
+    -ms-transform: $transform;
+    transform: $transform;
+}
+
+@mixin appearance($appearance) {
+    -webkit-appearance: $appearance;
+    -moz-appearance: $appearance;
+    -o-appearance: $appearance;
+    appearance: $appearance;
+}
+
 // media queries
 @mixin mobile {
-    @media (max-width: #{$mobileWidth}) {
+    @media (min-width: #{$mobile-width}) {
         @content;
     }
 }
   
 @mixin tablet {
-    @media (max-width: #{$tabletWidth}) {
+    @media (min-width: #{$tablet-width}) {
         @content;
     }
 }
 
 @mixin laptop {
-    @media (max-width: #{$laptopWidth}) {
+    @media (min-width: #{$laptop-width}) {
         @content;
     }
 }
 
 @mixin desktop {
-    @media (max-width: #{$desktopWidth}) {
+    @media (min-width: #{$desktop-width}) {
         @content;
     }
 }

@@ -1,4 +1,6 @@
 @import 'components/_mixins';
+@import 'components/_animations';
+
 
 // standardization and typography
 
@@ -12,20 +14,29 @@ a {
 }
 
 body {
-    // font-family: 'Lora', serif; // nice, pairs elegantly with EB Garamond, but maybe too much serif overall
-    // font-family: 'Montserrat', sans-serif; // too stretchy
-    font-family: 'Open Sans', sans-serif;
+    font-family: $body-font-face;
+
+    margin: 0;
+    width: 100%;
+}
+
+.fixed {
+    overflow-y: scroll;
+}
+
+.fixed-body {
+    overflow: hidden;
 }
 
 .title {
-    font-family: 'EB Garamond', serif;
-    font-size: 2.25em; // 36px
+    font-family: $title-font-face;
+    font-size: $title-font-size; // 36px
 }
 
 .subtitle {
     font-style: italic;
-    font-family: 'EB Garamond', serif;
-    font-size: 1em; // 16px
+    font-family: $subtitle-font-face;
+    font-size: $subtitle-font-size; // 16px
     font-weight: lighter;
 }
 
@@ -58,21 +69,36 @@ $align-items-list: (normal, stretch, center, start, end, flex-start, flex-end, b
 // styles
 
 #github-link {
-    position: absolute;
+    position: fixed;
     top: 0;
-    right: 4px;
+    left: .25em;
     font-size: 2em;
 }
 
-.loading {
-    font-size: 3em;
-    padding-top: 2em;
+$loading: (loading, loading-more);
+@each $value in $loading {
+    .#{$value} {
+        font-size: 3em;
+        padding-top: 2em;
+
+        @if $value == loading-more {
+            margin: auto;
+        }
+    }
 }
 
 .container {
-    max-width: 30vw;
     margin: auto;
-    padding-top: 1em;
+    padding: 1em 2em 0;
+
+    @include tablet {
+        padding: 1em 0 0;
+        width: $list-width-md;
+    }
+
+    @include laptop {
+        max-width: $list-width-lg;
+    }
 }
 
 #sort-control-box {
@@ -80,15 +106,39 @@ $align-items-list: (normal, stretch, center, start, end, flex-start, flex-end, b
     margin-top: 3em;
 
     #text-search {
+        font-family: $text-input-font-face;
         flex-grow: 1;
+        margin-right: .5em;
+        outline: none;
+        border: $search-border-thickness solid $search-border-color;
+        border-radius: $search-border-radius;
+        padding: .5em;
+        @include transition(border-color $search-border-click-timing $search-border-click-function);
+
+        &:focus {
+            border-color: $search-border-click-color;
+        }
     }
 
-    // #reset {
+    #reset {
+        border: $reset-border-thickness solid $reset-border-color;
+        border-radius: $reset-border-radius;
+        padding: .5em;
+        background-color: $reset-background-color;
+        @include transition(background-color $reset-background-hover-timing $reset-background-hover-function, border-color $reset-border-click-timing $reset-border-click-function);
 
-    // }
+        &:hover {
+            background-color: $reset-background-color-hover;
+            cursor: pointer;
+        }
+
+        &:active {
+            border-color: $reset-border-click-color;
+        }
+    }
 }
 
-#todo-list {
+#todo-list-container {
     width: 100%;
 
     ul {
@@ -110,11 +160,123 @@ $align-items-list: (normal, stretch, center, start, end, flex-start, flex-end, b
 }
 
 .task-checkbox-container.sort-control {
-    width: 1.5em;
-    text-align: center;
+    width: $list-checkbox-column-width;
 }
 
 .task-title-container.sort-control {
     width: 100%;
-    text-align: center;
+}
+
+.sort-control {
+    text-align: center; 
+    cursor: pointer;
+    @include transition(background-color $sort-arrow-hover-timing $sort-arrow-hover-function);
+
+    svg {
+        @include transition(transform $sort-arrow-timing $sort-arrow-function);
+    }
+
+    &:hover {
+        background-color: $list-sort-hover-color;
+    }
+}
+
+.list-item {
+    @include transition(background-color $list-hover-timing $list-hover-function);
+    // @include transition(color $list-hover-timing $list-hover-function);
+    border-radius: 4px;
+
+    div:first-child {
+        width: $list-checkbox-column-width;
+        display: inline-flex;
+        position: relative;
+    }
+
+    input[type="checkbox"] {
+        height: $checkbox-size;
+        width: $checkbox-size;
+        margin-left: auto;
+        margin-right: auto;
+        border: $checkbox-border-thickness solid $checkbox-border-color;
+        border-radius: $checkbox-border-radius;
+        background-color: $checkbox-unchecked-color;
+        @include appearance(none);
+        @include transition(background-color, $checkbox-click-timing, $checkbox-click-function);
+
+        &:checked {
+            background-color: $checkbox-checked-color;
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    &:hover {
+        background-color: $list-hover-color;
+        // color: $list-hover-color;
+        cursor: pointer;
+    }
+}
+
+.Modal {
+    position: absolute;
+    top: 40px;
+    left: 2em;
+    right: 2em;
+    margin: auto;
+    padding: 1em;
+    background-color: $modal-color;
+    border-radius: $modal-border-radius;
+    
+    @include tablet {
+        width: $list-width-md;
+        left: 0;
+        right: 0;
+    }
+
+    @include laptop {
+        width: $list-width-lg;
+    }
+
+    p {
+        margin: 0;
+
+        &:not(:last-child) {
+            margin-bottom: 1em;
+        }
+    }
+}
+
+.Modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $overlay-color;
+}
+
+.matched-text {
+    background-color: $app-background;
+    color: $blue;
+    font-weight: bold;
+    @include transition(color, 1s, ease);
+}
+
+.no-results {
+    h3 {
+        text-align: center;
+        font-family: $no-results-font-face;
+        font-weight: $no-results-font-weight;
+        color: $no-results-color;
+    }
+}
+
+.finished-scrolling {
+    h3 {
+        text-align: center;
+        font-family: $finished-scrolling-font-face;
+        font-weight: $finished-scrolling-font-weight;
+    }
 }

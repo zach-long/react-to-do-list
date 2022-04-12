@@ -16,7 +16,4 @@ This is hosted on Heroku [here](https://floating-harbor-80134.herokuapp.com/).
 - [x] Closing the page should take user back to the list view
 - [x] Visually able to mark tasks complete
 - [x] Infinite scroll (new assets load as the user scrolls) or paged list
-- [ ] Looks real good
-
-Additional ideas:
-- [ ] After text search, highlight the matched substring in the result
+- [x] Looks real good

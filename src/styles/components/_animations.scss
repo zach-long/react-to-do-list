@@ -1,0 +1,30 @@
+@import '_variables';
+@import '_mixins';
+
+// https://reactcommunity.org/react-modal/styles/transitions/
+.ReactModal__Overlay {
+    opacity: 0;
+    @include transition(opacity $modal-fade ease-in-out); // *** timing here must match value on Modal in app.jsx ***
+}
+
+.ReactModal__Overlay--after-open {
+    opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+    opacity: 0;
+}
+
+.rotating {
+    @include animation(rotating 1s linear infinite);
+}
+
+@keyframes rotating {
+    from {
+        @include transform(rotate(0deg));
+    }
+
+    to {
+        @include transform(rotate(360deg));
+    }
+}

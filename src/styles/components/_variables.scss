@@ -1,5 +1,110 @@
+/*
+colors
+typography
+timings and functions standardization
+modal
+input
+list
+breakpoints
+*/
+
+// colors
+$app-background: #fff;
+$pale-gray: #f0f0f0;
+$gray: gray;
+$pale-green: #ecffe0;
+$light-green: #d2ffb8;
+$dark-green: #88b86c;
+$blue: #437f8c;
+
+// typography
+$title-font-face: 'EB Garamond', serif;
+$title-font-size: 2.25em;
+
+$subtitle-font-face: 'EB Garamond', serif;
+$subtitle-font-size: 1em;
+
+$body-font-face: 'Open Sans', sans-serif;
+
+$text-input-font-face: $body-font-face;
+
+$no-results-font-face: 'Open Sans', sans-serif;
+$no-results-font-weight: 300;
+$no-results-color: $gray;
+
+$finished-scrolling-font-face: 'EB Garamond', serif;
+$finished-scrolling-font-weight: 300;
+
+// timings and functions standardization
+$responsive-timing: 75ms; // 'responsive' meaning fast and natural feeling but still perceptibly animated
+$fast-timing: 150ms;
+$moderate-timing: 250ms;
+$slow-timing: 500ms;
+
+$responsive-function: ease; // 'responsive' meaning fast and natural feeling but still perceptibly animated
+$list-item-function: ease-in-out;
+
+// modal
+$modal-color: rgba(255, 255, 255, 1);
+$overlay-color: rgba(10, 10, 10, .66);
+$modal-fade: 100ms;
+$modal-border-radius: 4px;
+
+// input
+$input-border-color: lightgray;
+$input-border-thickness: 2px;
+$input-border-radius: 6px;
+
+$checkbox-size: 1.5rem;
+$checkbox-border-color: $input-border-color;
+$checkbox-border-thickness: $input-border-thickness;
+$checkbox-border-radius: $input-border-radius;
+$checkbox-click-timing: $slow-timing;
+$checkbox-click-function: $responsive-function;
+$checkbox-unchecked-color: $app-background;
+$checkbox-checked-color: $light-green;
+
+$search-border-color: $input-border-color;
+$search-border-thickness: $input-border-thickness;
+$search-border-radius: $input-border-radius;
+
+$search-border-click-timing: $responsive-timing;
+$search-border-click-color: $dark-green;
+$search-border-click-function: $responsive-function;
+
+$reset-border-color: $input-border-color;
+$reset-border-thickness: $input-border-thickness;
+$reset-border-radius: $input-border-radius;
+
+$reset-background-color: $app-background;
+$reset-background-color-hover: $light-green;
+$reset-background-hover-timing: $fast-timing;
+$reset-background-hover-function: $responsive-function;
+
+$reset-border-click-timing: $responsive-timing;
+$reset-border-click-color: $dark-green;
+$reset-border-click-function: $responsive-function;
+
+// list
+$list-checkbox-column-width: 2rem;
+
+$list-sort-hover-color: $pale-green;
+
+$list-width-md: 66%;
+$list-width-lg: 33em;
+
+$sort-arrow-timing: $fast-timing;
+$sort-arrow-function: $responsive-function;
+
+$sort-arrow-hover-timing: $moderate-timing;
+$sort-arrow-hover-function: $list-item-function;
+
+$list-hover-timing: $moderate-timing;
+$list-hover-function: $list-item-function;
+$list-hover-color: $pale-gray;
+
 // breakpoints
-$mobileWidth: 375px;
-$tabletWidth: 768px;
-$laptopWidth: 1024px;
-$desktopWidth: 1440px;
+$mobile-width: 375px;
+$tablet-width: 768px;
+$laptop-width: 1024px;
+$desktop-width: 1440px;

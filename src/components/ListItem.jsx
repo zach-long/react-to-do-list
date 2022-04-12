@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Highlighter from 'react-highlight-words';
 
 function ListItem(props) {
-    // console.log(`ListItem component rendering...`);
-    // console.log(`received props:`)
-    // console.log(props)
 
     function handleChange(e) {
         e.stopPropagation();
@@ -22,12 +20,16 @@ function ListItem(props) {
     }
 
     return (
-        <li key={props.i.id} onClick={toggleModal}>
+        <li key={props.i.id} onClick={toggleModal} className="list-item">
             <div className="task-checkbox-container">
                 <input type="checkbox" checked={props.i.completed} onClick={handleChange} />
             </div>
             <div className="task-title-container">
-                {props.i.title}
+                <Highlighter
+                    highlightClassName="matched-text"
+                    searchWords={[props.searchText]}
+                    textToHighlight={props.i.title}
+                />
             </div>
         </li>
     );

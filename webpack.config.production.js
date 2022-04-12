@@ -11,19 +11,25 @@ module.exports = {
     filename: outputJsName,
     path: path.resolve(__dirname, outputDir)
   },
-//   module: {
-//     rules: [
-//       {
-//         test: /\.tsx?$/,
-//         use: 'ts-loader',
-//         exclude: /node_modules/
-//       },
-//       {
-//         test: /\.(scss|css)$/,
-//         use: ['style-loader', 'css-loader', 'sass-loader'],
-//       }
-//     ]
-//   },
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx)?$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+            plugins: ['@babel/transform-runtime']
+          }
+        },
+        exclude: /node_modules/
+      },
+      {
+        test: /\.(scss|css)$/,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
+      }
+    ]
+  },
   resolve: {
     extensions: ['.jsx', '.js']
   }
