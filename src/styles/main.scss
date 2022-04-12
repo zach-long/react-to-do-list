@@ -127,10 +127,13 @@ $loading: (loading, loading-more);
         background-color: $reset-background-color;
         @include transition(background-color $reset-background-hover-timing $reset-background-hover-function, border-color $reset-border-click-timing $reset-border-click-function);
 
-        &:hover {
-            background-color: $reset-background-color-hover;
-            cursor: pointer;
+        @include hover {
+            &:hover {
+                background-color: $reset-background-color-hover;
+                cursor: pointer;
+            }
         }
+        
 
         &:active {
             border-color: $reset-border-click-color;
@@ -175,9 +178,10 @@ $loading: (loading, loading-more);
     svg {
         @include transition(transform $sort-arrow-timing $sort-arrow-function);
     }
-
-    &:hover {
-        background-color: $list-sort-hover-color;
+    @include hover {
+        &:hover {
+            background-color: $list-sort-hover-color;
+        }
     }
 }
 
@@ -188,7 +192,7 @@ $loading: (loading, loading-more);
 
     div:first-child {
         width: $list-checkbox-column-width;
-        display: inline-flex;
+        display: flex;
         position: relative;
     }
 
@@ -207,15 +211,19 @@ $loading: (loading, loading-more);
             background-color: $checkbox-checked-color;
         }
 
-        &:hover {
-            cursor: pointer;
+        @include hover {
+            &:hover {
+                cursor: pointer;
+            }
         }
     }
 
-    &:hover {
-        background-color: $list-hover-color;
-        // color: $list-hover-color;
-        cursor: pointer;
+    @include hover {
+        &:hover {
+            background-color: $list-hover-color;
+            // color: $list-hover-color;
+            cursor: pointer;
+        }
     }
 }
 

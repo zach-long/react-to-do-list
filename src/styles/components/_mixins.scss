@@ -38,6 +38,12 @@
 }
 
 // media queries
+@mixin hover {
+    @media (hover: hover) {
+        @content;
+    }
+}
+
 @mixin mobile {
     @media (min-width: #{$mobile-width}) {
         @content;
