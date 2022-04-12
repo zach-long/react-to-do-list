@@ -1,0 +1,120 @@
+@import 'components/_mixins';
+
+// standardization and typography
+
+html {
+    scroll-behavior: smooth;
+}
+
+a {
+    color: #000;
+    text-decoration: none;
+}
+
+body {
+    // font-family: 'Lora', serif; // nice, pairs elegantly with EB Garamond, but maybe too much serif overall
+    // font-family: 'Montserrat', sans-serif; // too stretchy
+    font-family: 'Open Sans', sans-serif;
+}
+
+.title {
+    font-family: 'EB Garamond', serif;
+    font-size: 2.25em; // 36px
+}
+
+.subtitle {
+    font-style: italic;
+    font-family: 'EB Garamond', serif;
+    font-size: 1em; // 16px
+    font-weight: lighter;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+$flex-direction-list: (row, row-reverse, column, column-reverse);
+@each $value in $flex-direction-list {
+    .flex-#{$value} {
+        display: flex;
+        flex-direction: $value;
+    }
+}
+
+$justify-content-list: (center, start, end, flex-start, flex-end, left, right, normal, space-between, space-around, space-evenly, stretch);
+@each $value in $justify-content-list {
+    .justify-content-#{$value} {
+        justify-content: $value;
+    }
+}
+
+$align-items-list: (normal, stretch, center, start, end, flex-start, flex-end, baseline);
+@each $value in $align-items-list {
+    .align-items-#{$value} {
+        align-items: $value;
+    }
+}
+
+// styles
+
+#github-link {
+    position: absolute;
+    top: 0;
+    right: 4px;
+    font-size: 2em;
+}
+
+.loading {
+    font-size: 3em;
+    padding-top: 2em;
+}
+
+.container {
+    max-width: 30vw;
+    margin: auto;
+    padding-top: 1em;
+}
+
+#sort-control-box {
+    width: 100%;
+    margin-top: 3em;
+
+    #text-search {
+        flex-grow: 1;
+    }
+
+    // #reset {
+
+    // }
+}
+
+#todo-list {
+    width: 100%;
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+
+        li {
+            @include flex-container(row, start, center);
+
+            &:not(:last-child) {
+                padding-bottom: .5em;
+            }
+
+            .task-title-container:not(.sort-control) {
+                padding-left: .25em;
+            }
+        }
+    }
+}
+
+.task-checkbox-container.sort-control {
+    width: 1.5em;
+    text-align: center;
+}
+
+.task-title-container.sort-control {
+    width: 100%;
+    text-align: center;
+}

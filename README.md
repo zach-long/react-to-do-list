@@ -9,11 +9,14 @@ This is hosted on Heroku [here](https://floating-harbor-80134.herokuapp.com/).
 ###### *To-do list for the to-do list*
 
 
-- [ ] Load data from https://jsonplaceholder.typicode.com/
-- [ ] Sortable ascending and descending
-- [ ] String searchable
-- [ ] Clicking on a row should open into a new page with all the details
-- [ ] Closing the page should take user back to the list view
-- [ ] Visually able to mark tasks complete
-- [ ] Infinite scroll (new assets load as the user scrolls) or paged list
+- [x] Load data from https://jsonplaceholder.typicode.com/
+- [x] Sortable ascending and descending
+- [x] String searchable
+- [x] Clicking on a row should open into a new page with all the details
+- [x] Closing the page should take user back to the list view
+- [x] Visually able to mark tasks complete
+- [x] Infinite scroll (new assets load as the user scrolls) or paged list
 - [ ] Looks real good
+
+Additional ideas:
+- [ ] After text search, highlight the matched substring in the result
