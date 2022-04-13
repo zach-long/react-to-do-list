@@ -142,7 +142,7 @@ class App extends Component {
     // to the user
     async handleDonenessSort() {
         console.log(`handleDonenessSort()`);
-        const tempTodosArr = [...this.state.todos];
+        const tempTodosArr = [...this.state.todosCached];
         const sortedTodosArr = await this.sortBool(tempTodosArr);
         if (!this.state.isDonenessSorted.sorted) {
             this.setState({isDonenessSorted: {sorted: true, ascending: true}});
