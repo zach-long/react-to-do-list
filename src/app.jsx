@@ -84,10 +84,10 @@ class App extends Component {
     }
 
     async resetSort() {
-        console.log(`reset from cache*************************************`)
+        console.log(`*************** reset from cache ***************`)
         console.log(this.state.todos)
         console.log(this.state.todosCached)
-        console.log(`*************************************`)
+        console.log(`************************************************`)
         this.setState({todos: this.state.todosCached});
         this.setState({isDonenessSorted: {sorted: false, ascending: false}});
         this.setState({isTaskSorted: {sorted: false, ascending: false}});
@@ -99,101 +99,83 @@ class App extends Component {
         this.setState({isTaskSorted: {sorted: false, ascending: false}});
     }
 
+    // helper function used by handleDonenessSort()
+    sortBool = async (arrTodos) => {
+        let tempArr = arrTodos;
+        tempArr.sort((a, b) => Number(a.completed) - Number(b.completed)).reverse();
+        return tempArr;
+    };
+
+    // helper function used by handleTaskSort()
+    sortStr = async (arrTodos) => {
+        let tempArr = arrTodos;
+        tempArr.sort((a, b) => {
+            let insensitiveA = a.title.toLowerCase(),
+                insensitiveB = b.title.toLowerCase();
+
+            if (insensitiveA < insensitiveB) {
+                return -1;
+            } else if (insensitiveA > insensitiveB) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+        return tempArr;
+    }
+
+
     // **************************************************************************
-    // sorting functions should be able to be combined into one abstract function
-    // come back to this if there is time
+    // These sorts handleDonenessSort() and handleTaskSort() should be combined
+    // into one sort function with a hashmap or something to iterate over the
+    // unique names of each
     // **************************************************************************
     // async handleSort() {
     //     console.log(`handleSort()`);
     // }
 
-    // this is very very very very bad, dry it
+
+    // *****************************************************************
+    // sorting with infinite scroll should be performed at the API level
+    // but as I can't see an endpoint to sort the GET request I am just
+    // going to tack it on to my dataset unsorted and let it be subject
+    // to the user
     async handleDonenessSort() {
         console.log(`handleDonenessSort()`);
-        let tempTodosArr = [...this.state.todos];
-        if (!this.state.isDonenessSorted.sorted) { // if not sorted, sort ascending
-            console.log(`First 'if' triggered, sorting unsorted array`);
-            
-            tempTodosArr.sort((a, b) => Number(a.completed) - Number(b.completed)).reverse();
-
-            console.log(`After sort, compare temp array to state:`);
-            console.log(tempTodosArr);
-            console.log(this.state.todos);
-            
+        const tempTodosArr = [...this.state.todos];
+        const sortedTodosArr = await this.sortBool(tempTodosArr);
+        if (!this.state.isDonenessSorted.sorted) {
             this.setState({isDonenessSorted: {sorted: true, ascending: true}});
-        } else { // if sorted, sort the opposite of what it is
-            if (!this.state.isDonenessSorted.ascending) {
-                tempTodosArr.sort((a, b) => Number(a.completed) - Number(b.completed)).reverse();
-            } else { // is sorted, is ascending, sort descending
-                // sort it again in case other sorting has been applied
-                // tempTodosArr.sort((a, b) => Number(a.completed) - Number(b.completed));
-                tempTodosArr.reverse();
+        } else {
+            if (this.state.isDonenessSorted.ascending) {
+                sortedTodosArr.reverse();
             }
-            console.log(`'else' triggered, reversing sorted array`);
             this.setState({isDonenessSorted: {sorted: true, ascending: !this.state.isDonenessSorted.ascending}});
         }
-        this.setState({todos: tempTodosArr});
-        this.setState({todosMutated: tempTodosArr});
+        this.setState({todos: sortedTodosArr});
+        this.setState({todosMutated: sortedTodosArr});
         this.setState({isTaskSorted: {sorted: false, ascending: false}});
     }
 
-    // this is very very very very bad, dry it
+    // *****************************************************************
+    // sorting with infinite scroll should be performed at the API level
+    // but as I can't see an endpoint to sort the GET request I am just
+    // going to tack it on to my dataset unsorted and let it be subject
+    // to the user
     async handleTaskSort() {
         console.log(`handleTaskSort()`);
-        let tempTodosArr = [...this.state.todos];
+        const tempTodosArr = [...this.state.todos];
+        const sortedTodosArr = await this.sortStr(tempTodosArr);
         if (!this.state.isTaskSorted.sorted) {
-            console.log(`First 'if' triggered, sorting unsorted array`);
-            
-            tempTodosArr.sort((a, b) => {
-                let insensitiveA = a.title.toLowerCase(),
-                    insensitiveB = b.title.toLowerCase();
-    
-                if (insensitiveA < insensitiveB) {
-                    return -1;
-                } else if (insensitiveA > insensitiveB) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            });
-
-            console.log(`After sort, compare temp array to state:`);
-            console.log(tempTodosArr);
-            console.log(this.state);
             this.setState({isTaskSorted: {sorted: true, ascending: true}});
         } else {
-            console.log(`'else' triggered, reversing sorted array`);
-            if (!this.state.isTaskSorted.ascending) {            
-                tempTodosArr.sort((a, b) => {
-                    let insensitiveA = a.title.toLowerCase(),
-                        insensitiveB = b.title.toLowerCase();
-        
-                    if (insensitiveA < insensitiveB) {
-                        return -1;
-                    } else if (insensitiveA > insensitiveB) {
-                        return 1;
-                    } else {
-                        return 0;
-                    }
-                });
-            } else {
-                tempTodosArr.sort((a, b) => {
-                    let insensitiveA = a.title.toLowerCase(),
-                        insensitiveB = b.title.toLowerCase();
-        
-                    if (insensitiveA < insensitiveB) {
-                        return -1;
-                    } else if (insensitiveA > insensitiveB) {
-                        return 1;
-                    } else {
-                        return 0;
-                    }
-                }).reverse();
+            if (this.state.isTaskSorted.ascending) {            
+                sortedTodosArr.reverse();
             }
             this.setState({isTaskSorted: {sorted: true, ascending: !this.state.isTaskSorted.ascending}});
         }
-        this.setState({todos: tempTodosArr});
-        this.setState({todosMutated: tempTodosArr});
+        this.setState({todos: sortedTodosArr});
+        this.setState({todosMutated: sortedTodosArr});
         this.setState({isDonenessSorted: {sorted: false, ascending: false}});
     }
 
@@ -276,6 +258,7 @@ class App extends Component {
             return <ListItem key={i.id} i={i} searchText={this.state.isTextSearched.text} updateTask={this.updateTask} toggleModal={this.toggleModal} />
         });
 
+        // both buttons should probably be extracted into its own component
         const resetButton = this.state.resetIsHovered ?
             <button id="reset" onMouseEnter={this.toggleResetHover} onMouseLeave={this.toggleResetHover} onClick={this.resetSort}>
                 <FontAwesomeIcon icon={faArrowRotateRight} className="rotating" />
@@ -289,8 +272,8 @@ class App extends Component {
         return (
             <div className="flex-column align-items-center container">
                 <a id="github-link" style={{display: "table-cell"}} href="https://github.com/zach-long/react-to-do-list" target="_blank"><FontAwesomeIcon icon={faGithub} /></a>
-                <h1 class="title">Things to be done</h1>
-                <h4 class="subtitle">While we wait for life, life passes.</h4>
+                <h1 className="title">Things to be done</h1>
+                <h4 className="subtitle">While we wait for life, life passes.</h4>
                 <div id="sort-control-box" className="flex-row justify-content-space-between">
                     <input id="text-search" placeholder="What are you searching for?" value={this.state.isTextSearched.text} onChange={this.handleTextSearch} />
                     {/* render reset button with hover & rotate animations */}
